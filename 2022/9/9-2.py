@@ -55,7 +55,7 @@ for i, instruction in enumerate(data):
         locations.add(tuple(knots[-1]))
 
 
-size = [30,30]
+size = [600,400]
 for j in range(size[1]):
     for i in range(size[0]):
         if (i-size[0]//2, -(j-size[1]//2)) == (0,0):
