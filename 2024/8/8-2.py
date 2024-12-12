@@ -1,51 +1,35 @@
-with open("8-test.txt", "r") as f:
-    content = f.read()
-    lineLen = len(content.splitlines()[0])
-    tiles = "".join(content.splitlines())
+with open("8.txt", "r") as f:
+    grid = f.read().splitlines()
 
-antinodes = set()
 locations = {}
+antinodes = set()
 
-def locConvert(loc):
-    return loc%lineLen, loc//lineLen
-
-for i, tile in enumerate(tiles):
-    if tile == ".": continue
-    if tile not in locations:
-        locations[tile] = [i]
-        continue
-    
-
-    for location in locations[tile]:
-        currLineNum = i // lineLen
-        locLineNum = location // lineLen
-
-        dy = (currLineNum) - (locLineNum)
-        dx = i-location
-
-        antinodeLoc = location-dx
-
-        print(locConvert(i), locConvert(location))
-
-        while currLineNum - ((antinodeLoc+1)//lineLen) == dy and antinodeLoc >= 0:
-            antinodeLoc -= dx
-            currLineNum -= dy
-
+for y, row in enumerate(grid):
+    for x, tile in enumerate(row):
+        if tile == ".": continue
+        if tile not in locations:
+            locations[tile] = [(x,y)]
+            continue
         
-        currLineNum = (antinodeLoc-dx) // lineLen
+        for x2,y2 in locations[tile]:
+            dx = x2-x
+            dy = y2-y
 
-        while (antinodeLoc+1)//lineLen - currLineNum == dy and antinodeLoc < len(tiles):
-            print("gre", locConvert(antinodeLoc))
-            antinodeLoc += dx
-            currLineNum += dy
-            antinodes.add(antinodeLoc)
+            while 0 <= x2 < len(row) and 0 <= y2 < len(grid):
+                x2 -= dx
+                y2 -= dy
 
-        print(locConvert(antinodeLoc))
-        print((antinodeLoc+1)//lineLen - currLineNum == dy , antinodeLoc < len(tiles))
+            x2 += dx
+            y2 += dy
+            
+            while 0 <= x2 < len(row) and 0 <= y2 < len(grid):
+                antinodes.add((x2,y2))
+                x2 += dx
+                y2 += dy
 
-    locations[tile].append(i)
 
-# for node in antinodes:
-#     print(node, node%lineLen, node//lineLen)
+        locations[tile].append((x,y))
+
+
 
 print(len(antinodes))
