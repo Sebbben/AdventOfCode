@@ -5,30 +5,27 @@ with open("9.txt", "r") as f:
 files = list(map(int, diskmap[::2]))
 freeSpaces = list(map(int, diskmap[1::2]))
 
-compacted = ""
-totLenFiles = sum(files)
-
-fillerFileID = len(files) - 1 
-
-fillers = "".join([str(i)*files[i] for i in range(len(files)-1,-1,-1)])
-
-fileID = 0
-for fileID, amount in enumerate(files):
-    compacted += str(fileID)*int(files[fileID])
-    fileID += 1
-
-    compacted += fillers[:freeSpaces[0]]
-
-    fillers = fillers[freeSpaces[0]:]
-    
-    freeSpaces.pop(0)
-
-    if not freeSpaces or len(compacted) >= totLenFiles: break
-
-compacted = compacted[:totLenFiles]
-
 tot = 0
-for i, v in enumerate(compacted):
-    tot += i*int(v)
+
+outIndex = 0
+fileId = 0
+while fileId < len(files):
+    size = files[fileId]
+    for _ in range(size):
+        tot += outIndex*fileId
+        files[fileId] -= 1
+        outIndex += 1
+    
+    for _ in range(freeSpaces.pop(0)):
+        if files[-1] == 0: break
+        tot += (len(files)-1)*outIndex
+        outIndex += 1
+        files[-1] -= 1
+        if files[-1] == 0:
+            files.pop()
+
+    fileId += 1
+
+
 
 print(tot)
